@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cortex Reach — Sistema de Vendas</title>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5}</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const{useState}=React;
+const C={navy:"#1F4E79",navyMid:"#0C447C",navyDark:"#042C53",blue:"#378ADD",blueLight:"#85B7EB",blueLighter:"#D6E4F0",blueBg:"#E6F1FB",blueDark:"#0C447C",purple:"#3C3489",purpleMid:"#534AB7",purpleLight:"#EEEDFE",purpleBorder:"#CECBF6",purpleDark:"#26215C",greenBg:"#EAF3DE",greenDark:"#27500A",orangeBg:"#FAEEDA",orangeDark:"#633806",redBg:"#FCEBEB",redDark:"#791F1F",gray:"#f5f5f5",grayBorder:"#e8e8e8",grayText:"#888",text:"#1a1a1a",textMuted:"#666",white:"#fff"};
+
+const Tag=({children,color="blue"})=>{const m={blue:{bg:C.blueBg,color:C.blueDark},green:{bg:C.greenBg,color:C.greenDark},orange:{bg:C.orangeBg,color:C.orangeDark},red:{bg:C.redBg,color:C.redDark},purple:{bg:C.purpleLight,color:C.purple}};const s=m[color]||m.blue;return React.createElement("span",{style:{fontSize:10,padding:"2px 8px",borderRadius:20,fontWeight:500,background:s.bg,color:s.color}},children)};
+
+const SD=({badge,badgeColor="blue"})=>{const m={blue:{bg:C.blueBg,color:C.blueDark},green:{bg:C.greenBg,color:C.greenDark},orange:{bg:C.orangeBg,color:C.orangeDark},red:{bg:C.redBg,color:C.redDark},purple:{bg:C.purpleLight,color:C.purple}};const s=m[badgeColor]||m.blue;return React.createElement("div",{style:{display:"flex",alignItems:"center",gap:10,padding:"9px 16px",background:C.gray,borderTop:`2px solid ${C.grayBorder}`}},React.createElement("div",{style:{flex:1,height:.5,background:C.grayBorder}}),React.createElement("span",{style:{fontSize:10,padding:"2px 9px",borderRadius:20,fontWeight:500,whiteSpace:"nowrap",background:s.bg,color:s.color}},badge))};
+
+const BO=({children,purple})=>React.createElement("div",{style:{padding:"8px 14px",background:purple?C.purpleLight:C.gray,borderTop:`0.5px solid ${purple?C.purpleBorder:C.grayBorder}`}},React.createElement("div",{style:{fontSize:9,fontWeight:500,letterSpacing:".08em",textTransform:"uppercase",color:purple?C.purpleMid:C.grayText,marginBottom:2}},"Saída do bloco"),React.createElement("div",{style:{fontSize:11,color:C.text,lineHeight:1.5}},children));
+
+const PR=({num,q,why,tags=[],variant="normal"})=>{const[open,setOpen]=useState(true);const isV=variant==="val";const numBg=isV?C.purpleLight:C.gray;const numColor=isV?C.purpleMid:C.grayText;const bc=isV?C.purpleBorder:C.grayBorder;return React.createElement("div",{style:{display:"grid",gridTemplateColumns:"28px 1fr",borderTop:`0.5px solid ${bc}`,cursor:"pointer"},onClick:()=>setOpen(o=>!o)},React.createElement("div",{style:{background:numBg,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"13px 0",fontSize:11,fontWeight:500,color:numColor,borderRight:`0.5px solid ${bc}`}},num),React.createElement("div",{style:{padding:"11px 14px"}},React.createElement("div",{style:{fontSize:13,color:C.text,lineHeight:1.55,marginBottom:open?6:0}},q),open&&React.createElement(React.Fragment,null,React.createElement("div",{style:{fontSize:11,color:C.textMuted,lineHeight:1.5,padding:"5px 9px",borderLeft:`2px solid ${C.grayBorder}`,marginBottom:5},dangerouslySetInnerHTML:{__html:why}}),React.createElement("div",{style:{display:"flex",gap:5,flexWrap:"wrap"}},tags.map((t,i)=>React.createElement(Tag,{key:i,color:t.color},t.label))))))};
+
+const DISC_DATA={val:[{num:"A",q:"A diretoria já olha para isso como prioridade — ou você está construindo esse case internamente?",why:"Distingue <strong>champion de decisor</strong>. Se estiver construindo o case, você vira aliado no processo.",tags:[{label:"authority",color:"purple"},{label:"champion vs. decisor",color:"purple"}]},{num:"B",q:"Já existe budget separado para esse projeto — ou ainda precisa ser construído dentro do planejamento?",why:'"Precisa ser construído" <strong>não fecha o deal — abre um ciclo que você pode conduzir.</strong>',tags:[{label:"BANT — budget",color:"purple"}]},{num:"C",q:"Qual o timing ideal — existe algum marco de negócio, planejamento ou expansão que tornaria urgente ter isso rodando?",why:'"Marco de negócio" faz o cliente <strong>conectar urgência ao próprio calendário</strong>, não ao seu ciclo de vendas.',tags:[{label:"BANT — timeline",color:"purple"}]}],b1:[{num:1,q:"Quantos clientes ativos vocês atendem hoje — e como esse universo está dividido entre direto e indireto?",why:"Âncora o tamanho do problema. <strong>Quanto maior a malha indireta, mais urgente o Reach.</strong>",tags:[{label:"operação",color:"blue"}]},{num:2,q:"No canal indireto — quantos distribuidores são parceiros ativos e quantos vendedores existem nessa malha?",why:"<strong>Cada vendedor indireto que você não direciona é receita que escapa.</strong>",tags:[{label:"operação",color:"blue"},{label:"abre dor indireta",color:"red"}]},{num:3,q:"O foco é nas grandes contas ou no varejo pulverizado — e onde vocês sentem que precisam avançar mais?",why:'"Onde precisam avançar" revela <strong>ambição frustrada.</strong> Varejo pulverizado = abertura para o PMI.',tags:[{label:"operação",color:"blue"}]},{num:4,q:"Quantas categorias e SKUs são trabalhados ativamente — e existe mix ideal por canal ou região, ou cada vendedor decide na hora?",why:'"Cada vendedor decide na hora" nomeia a dor sem afirmar. <strong>Portfólio amplo sem mix = margem alta ignorada.</strong>',tags:[{label:"operação",color:"blue"},{label:"dor de portfólio",color:"red"}]}],b2:[{num:5,q:"Vocês utilizam alguma ferramenta de dados hoje — Scanntech, Neogrid, Nielsen ou algo interno?",why:'Se sim: <strong>"O que ela não responde?"</strong> Se não: terreno aberto.',tags:[{label:"dados",color:"green"}]},{num:6,q:"O time de dados trabalha com base qualificatória de PDVs — IBGE, CNPJs ativos — ou parte do histórico de pedidos internos?",why:'"Ou parte do histórico" induz confirmar a limitação. <strong>Só histórico = ponto cego total para PDVs não visitados.</strong>',tags:[{label:"dados",color:"green"},{label:"expõe ponto cego",color:"red"}]},{num:7,q:"Vocês têm controle de sell-in direto ao PDV ou o que chega é o sell-out do distribuidor — e como essa base é usada para projetar metas?",why:"Sell-out = dado agregado, atrasado. <strong>Você também precisa disso para modelar o PMI deles.</strong>",tags:[{label:"dados",color:"green"},{label:"dado agregado vs. granular",color:"red"}]}],b3:[{num:8,q:"Existe pré-qualificação dos PDVs antes da visita — ou o vendedor vai a campo decidindo na hora para onde ir?",why:'A segunda parte descreve o cenário ruim. <strong>Se confirmar: dor exposta. Se negar: "como funciona na prática?"</strong>',tags:[{label:"execução",color:"orange"},{label:"dor de priorização",color:"red"}]},{num:9,q:"Como a inteligência de mercado chega até a equipe comercial hoje — qual é o fluxo real, na prática?",why:'"Na prática" é a chave. <strong>Não interrompa. O silêncio depois é seu aliado.</strong>',tags:[{label:"execução",color:"orange"},{label:"PPT que não chega",color:"red"}]},{num:10,q:"Vocês conseguem direcionar o vendedor — direto ou via distribuidor — com uma recomendação específica de qual PDV visitar e o que oferecer?",why:'"Recomendação específica de PDV e o que oferecer" <strong>é o Reach em uma frase — dito como dor deles.</strong>',tags:[{label:"execução",color:"orange"},{label:"gancho WhatsApp",color:"red"}]}],b4:[{num:11,q:"Quais são as top prioridades da Kenvue para avançar no Brasil em 2026?",why:"Ouça sem interromper. <strong>Cada palavra que ela usar vai aparecer no seu pitch.</strong> Anote literalmente.",tags:[{label:"âncora estratégica",color:"red"}]},{num:12,q:"Se a execução de campo não melhorar nos próximos 6 meses — o que isso representa concretamente para essas prioridades?",why:'"6 meses" cria urgência. <strong>"Concretamente" força sair do abstrato.</strong> A resposta vira argumento de budget.',tags:[{label:"pergunta de consequência",color:"red"}]}],b5:[{step:"P13 — mapeamento de poder",q:'"Para desenhar um plano de projeto que faça sentido, quem mais precisaria estar envolvido — trade, dados, comercial ou outras lideranças que você vê como essenciais?"',why:"A Giovanna nomeia quem falta — você tem a lista de convidados para a próxima reunião."},{step:"P14 — validação de fit",q:'"Faz sentido até aqui — o que mais te chamou atenção?"',why:"Gate obrigatório. <strong>Revela o interesse real</strong> e qual dor ressoou mais."},{step:"P15 — segunda reunião",q:'"O próximo passo seria uma sessão de mapeamento de projeto — com você e as pessoas que mencionou. Qual semana funciona?"',why:'<strong>Não é "demo" — é mapeamento de projeto.</strong> Traz decisores para a mesa naturalmente.'},{step:"P16 — saída alternativa",q:'"Posso te mandar um resumo com proposta inicial para você avaliar com o time?"',why:"Saída digna que <strong>mantém o ciclo aberto</strong> se houver resistência."}]};
+
+function PageDiscovery(){
+  return React.createElement("div",{style:{border:`0.5px solid ${C.grayBorder}`,borderRadius:12,overflow:"hidden",background:C.white,maxWidth:860}},
+    React.createElement("div",{style:{background:C.navy,padding:"12px 18px 10px"}},
+      React.createElement("div",{style:{fontSize:9,letterSpacing:".1em",textTransform:"uppercase",color:C.blueLight,marginBottom:3}},"Abertura"),
+      React.createElement("div",{style:{fontSize:13,fontWeight:500,color:C.white}},"3 blocos — fale, mostre, alinhe")),
+    React.createElement("div",{style:{background:C.navy,padding:"10px 18px",borderTop:"0.5px solid rgba(255,255,255,.1)",display:"flex",alignItems:"flex-start",gap:14}},
+      React.createElement("div",{style:{fontSize:9,fontWeight:500,letterSpacing:".1em",textTransform:"uppercase",color:C.blue,whiteSpace:"nowrap",paddingTop:2}},"Por quê"),
+      React.createElement("div",{style:{width:2,background:C.blue,alignSelf:"stretch",flexShrink:0,borderRadius:2}}),
+      React.createElement("div",{style:{fontSize:12,color:C.blueLighter,lineHeight:1.6}},"A Cortex evoluiu — ",React.createElement("strong",{style:{color:C.white}},"inteligência da indústria dentro das ferramentas.")," Empresas do seu setor já estão capturando resultado. A Kenvue tem muito fit — e é por isso que busquei essa conversa.")),
+    React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",background:C.navyMid}},
+      [{num:"Dor 1",kw:"Dado qualificado",sol:"Mastercard + metodologia Cortex"},{num:"Dor 2",kw:"Potencial invisível",sol:"Varejo nacional com look-alike"},{num:"Dor 3",kw:"PPT que não chega",sol:"Priorização na mão do vendedor"}].map((d,i)=>React.createElement("div",{key:i,style:{padding:"12px 14px",borderRight:i<2?"0.5px solid rgba(255,255,255,.1)":"none"}},
+        React.createElement("div",{style:{fontSize:9,fontWeight:500,letterSpacing:".1em",textTransform:"uppercase",color:C.blueLight,marginBottom:5}},d.num),
+        React.createElement("div",{style:{fontSize:13,fontWeight:500,color:C.white,marginBottom:4}},d.kw),
+        React.createElement("div",{style:{fontSize:10,color:C.blue,marginBottom:3}},"↓"),
+        React.createElement("div",{style:{fontSize:11,color:C.blueLight,lineHeight:1.45}},d.sol)))),
+    React.createElement("div",{style:{background:C.navyMid,padding:"10px 18px",borderTop:`2px solid ${C.blue}`,display:"flex",alignItems:"center",gap:10,flexWrap:"wrap"}},
+      React.createElement("div",{style:{fontSize:9,fontWeight:500,letterSpacing:".1em",textTransform:"uppercase",color:C.blueLight}},"Objetivo"),
+      React.createElement("div",{style:{display:"flex",gap:8,flexWrap:"wrap",alignItems:"center"}},
+        ["Ouvir","→","Polir a engrenagem GTM","→","Mostrar","→","POC ou proposta"].map((k,i)=>k==="→"?React.createElement("span",{key:i,style:{fontSize:13,color:C.blue}},"→"):React.createElement("span",{key:i,style:{fontSize:12,fontWeight:500,color:C.white,background:"rgba(255,255,255,.1)",border:"0.5px solid rgba(255,255,255,.15)",borderRadius:8,padding:"4px 10px"}},k)))),
+    React.createElement("div",{style:{background:C.navyDark,padding:"10px 18px",borderTop:"0.5px solid rgba(255,255,255,.08)"}},
+      React.createElement("div",{style:{fontSize:11,color:C.blueLight,lineHeight:1.6,fontStyle:"italic"}},'"No final, só te peço: ',React.createElement("strong",{style:{color:C.blueLighter,fontStyle:"normal"}},"faz sentido — quero a POC ou proposta")," — ou — ",React.createElement("strong",{style:{color:C.blueLighter,fontStyle:"normal"}},"não é o momento, mantemos contato."),' Os dois são válidos. Posso seguir?"')),
+    React.createElement("div",{style:{display:"flex",alignItems:"center",gap:10,padding:"9px 16px",background:C.purpleLight,borderTop:`2px solid ${C.purple}`}},
+      React.createElement("span",{style:{fontSize:10,padding:"2px 9px",borderRadius:20,fontWeight:500,background:C.purple,color:C.purpleLight,whiteSpace:"nowrap"}},"Validação rápida"),
+      React.createElement("div",{style:{flex:1,height:.5,background:C.purpleBorder}}),
+      React.createElement("span",{style:{fontSize:10,color:C.purpleMid}},"Calibrar poder, budget e timing antes de mergulhar")),
+    DISC_DATA.val.map((r,i)=>React.createElement(PR,{key:i,...r,variant:"val"})),
+    React.createElement(BO,{purple:true},"Você sabe com quem está falando, se tem budget e urgência. Isso calibra tudo que vem a seguir."),
+    React.createElement(SD,{badge:"Bloco 1 — Operação",badgeColor:"blue"}),
+    DISC_DATA.b1.map((r,i)=>React.createElement(PR,{key:i,...r})),
+    React.createElement(BO,null,"Tamanho, modelo e onde está a maior lacuna de cobertura."),
+    React.createElement(SD,{badge:"Bloco 2 — Dados",badgeColor:"green"}),
+    DISC_DATA.b2.map((r,i)=>React.createElement(PR,{key:i,...r})),
+    React.createElement(BO,null,"O que alimenta as decisões — e onde o dado morre antes de chegar no campo."),
+    React.createElement(SD,{badge:"Bloco 3 — Execução",badgeColor:"orange"}),
+    DISC_DATA.b3.map((r,i)=>React.createElement(PR,{key:i,...r})),
+    React.createElement(BO,null,"A cliente descreveu onde a estratégia morre. Você tem o material para a transição ao pitch."),
+    React.createElement(SD,{badge:"Bloco 4 — Estratégia e urgência",badgeColor:"red"}),
+    DISC_DATA.b4.map((r,i)=>React.createElement(PR,{key:i,...r})),
+    React.createElement(BO,null,"A dor virou risco estratégico. Momento de transição para o pitch."),
+    React.createElement("div",{style:{borderTop:`2px solid ${C.purple}`}},
+      React.createElement("div",{style:{background:C.purple,padding:"9px 16px"}},
+        React.createElement("span",{style:{fontSize:10,fontWeight:500,letterSpacing:".08em",textTransform:"uppercase",color:C.purpleBorder}},"Bloco 5 — Decisão e próximos passos")),
+      React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr"}},
+        DISC_DATA.b5.map((s,i)=>React.createElement("div",{key:i,style:{padding:"12px 14px",borderRight:i%2===0?`0.5px solid ${C.purpleBorder}`:"none",borderBottom:i<2?`0.5px solid ${C.purpleBorder}`:"none",background:C.white}},
+          React.createElement("div",{style:{fontSize:9,fontWeight:500,letterSpacing:".08em",textTransform:"uppercase",color:C.purpleMid,marginBottom:4}},s.step),
+          React.createElement("div",{style:{fontSize:12,color:C.text,lineHeight:1.55,fontStyle:"italic",marginBottom:5}},s.q),
+          React.createElement("div",{style:{fontSize:11,color:C.textMuted,lineHeight:1.45},dangerouslySetInnerHTML:{__html:s.why}})))),
+      React.createElement("div",{style:{background:C.purpleLight,padding:"12px 16px",borderTop:`0.5px solid ${C.purpleBorder}`}},
+        React.createElement("div",{style:{fontSize:9,fontWeight:500,letterSpacing:".08em",textTransform:"uppercase",color:C.purpleMid,marginBottom:8}},"O que leva para a segunda reunião"),
+        React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8}},
+          [{title:"Pessoas certas",text:"Os nomes da P13 — mais o decisor, se não estava na call."},{title:"Dores com as palavras delas",text:"Frases exatas dos blocos de execução e estratégia. Repita — não parafrase."},{title:"Plano de projeto draft",text:"Escopo inicial e próximos passos — para parecer continuação, não nova venda."}].map((c,i)=>React.createElement("div",{key:i,style:{background:C.white,border:`0.5px solid ${C.purpleBorder}`,borderRadius:8,padding:"8px 10px"}},
+            React.createElement("div",{style:{fontSize:11,fontWeight:500,color:C.purple,marginBottom:3}},c.title),
+            React.createElement("div",{style:{fontSize:11,color:C.textMuted,lineHeight:1.45}},c.text))))),
+      React.createElement("div",{style:{background:C.purpleDark,padding:"11px 16px"}},
+        React.createElement("div",{style:{fontSize:9,fontWeight:500,letterSpacing:".08em",textTransform:"uppercase",color:"#7F77DD",marginBottom:5}},"Transição para o pitch"),
+        React.createElement("div",{style:{fontSize:12,color:"#EEEDFE",lineHeight:1.6,fontStyle:"italic"}},"[Giovanna], ",React.createElement("strong",{style:{color:C.white,fontStyle:"normal"}},"[repita 1–2 dores com as palavras exatas que ela usou]."),React.createElement("span",null," Isso é exatamente o que a Cortex resolve — posso te mostrar como?")))))
+}
+
+function PageBriefing(){
+  return React.createElement("div",{style:{border:`0.5px solid ${C.grayBorder}`,borderRadius:12,overflow:"hidden",background:C.white,maxWidth:860}},
+    React.createElement("div",{style:{background:C.navy,padding:"12px 18px 10px"}},
+      React.createElement("div",{style:{fontSize:9,letterSpacing:".1em",textTransform:"uppercase",color:C.blueLight,marginBottom:3}},"Briefing de conta · Hoje"),
+      React.createElement("div",{style:{fontSize:14,fontWeight:600,color:C.white}},"Kenvue — Giovanna Vizentin · Gerente de Categorias (Farma)")),
+    React.createElement("div",{style:{display:"flex",alignItems:"center",gap:10,padding:"9px 16px",background:C.blueBg,borderTop:`2px solid ${C.blue}`}},
+      React.createElement("div",{style:{flex:1,height:.5,background:C.blueLight}}),
+      React.createElement("span",{style:{fontSize:10,padding:"2px 9px",borderRadius:20,fontWeight:500,whiteSpace:"nowrap",background:C.blueBg,color:C.blueDark,border:`0.5px solid ${C.blueLight}`}},"Contexto de mercado")),
+    React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",borderTop:`0.5px solid ${C.grayBorder}`}},
+      [{label:"Crescimento da categoria",num:"+7%",numStyle:{fontSize:22,fontWeight:600,color:"#3B6D11"},body:"ao ano — Abras. Higiene e cuidados pessoais em expansão consistente."},{label:"Clínicas estéticas",num:"+11–15%",numStyle:{fontSize:22,fontWeight:600,color:C.orangeDark},body:"fev/26. Canal emergente com 290K pontos de contato."},{label:"Posição global",num:"4º",numStyle:{fontSize:22,fontWeight:600,color:C.blue},body:"maior mercado mundial de beleza e cuidados pessoais."},{label:"Universo PDV Kenvue",num:"864K+",numStyle:{fontSize:18,fontWeight:600,color:C.blue,lineHeight:1.4},body:"450K mini/mercearias · 124K farmácias · 290K clínicas"}].map((s,i)=>React.createElement("div",{key:i,style:{padding:"12px 14px",borderRight:i<3?`0.5px solid ${C.grayBorder}`:"none"}},
+        React.createElement("div",{style:{fontSize:9,fontWeight:600,letterSpacing:".08em",textTransform:"uppercase",color:C.grayText,marginBottom:4}},s.label),
+        React.createElement("div",{style:s.numStyle},s.num),
+        React.createElement("div",{style:{fontSize:11,color:C.textMuted,lineHeight:1.55,marginTop:4}},s.body)))),
+    React.createElement("div",{style:{display:"flex",alignItems:"center",gap:10,padding:"9px 16px",background:C.greenBg,borderTop:`2px solid #639922`}},
+      React.createElement("div",{style:{flex:1,height:.5,background:"#97C459"}}),
+      React.createElement("span",{style:{fontSize:10,padding:"2px 9px",borderRadius:20,fontWeight:500,background:C.greenBg,color:C.greenDark,border:"0.5px solid #97C459",whiteSpace:"nowrap"}},"Sinais McKinsey — o que está em jogo")),
+    React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",borderTop:`0.5px solid ${C.grayBorder}`}},
+      [{label:"Sinal 1 — Margem em risco",title:"Volume + Preço = execução de mix por PDV",body:"A categoria cresce mas margem escapa se o mix errado estiver no PDV certo. Execução por shopper deixou de ser tática — virou alavanca de receita."},{label:"Sinal 2 — Lealdade + vigilância",title:"Shopper não troca de marca nem de PDV",body:"Mas compra menos. Isso exige monitoramento granular: qual SKU, em qual PDV, para qual perfil — ou a Kenvue perde participação silenciosa."},{label:"Sinal 3 — Geração Z lidera",title:"GenZ gasta mais e puxa SKUs de indulgência",body:"Millennials são seletivos. Gen X / Boomers são cautelosos. Cada PDV tem um perfil dominante — e o mix ideal muda com isso."},{label:"Sinal 4 — Produto de shelf longo",title:"Giro rápido + shelf longo = ativo estratégico",body:"O varejista quer segurança de margem. Categorias de cuidados pessoais entregam isso. A Kenvue precisa mostrar o dado que prova ao PDV que vale o espaço."}].map((s,i)=>React.createElement("div",{key:i,style:{padding:"12px 14px",borderRight:i%2===0?`0.5px solid ${C.grayBorder}`:"none",borderBottom:i<2?`0.5px solid ${C.grayBorder}`:"none"}},
+        React.createElement("div",{style:{fontSize:9,fontWeight:600,letterSpacing:".08em",textTransform:"uppercase",color:C.grayText,marginBottom:4}},s.label),
+        React.createElement("div",{style:{fontSize:13,fontWeight:500,color:C.text,marginBottom:5,lineHeight:1.45}},s.title),
+        React.createElement("div",{style:{fontSize:11,color:C.textMuted,lineHeight:1.55}},s.body)))),
+    React.createElement("div",{style:{display:"flex",alignItems:"center",gap:10,padding:"9px 16px",background:C.purpleLight,borderTop:`2px solid ${C.purple}`}},
+      React.createElement("div",{style:{flex:1,height:.5,background:C.purpleBorder}}),
+      React.createElement("span",{style:{fontSize:10,padding:"2px 9px",borderRadius:20,fontWeight:500,background:C.purpleLight,color:C.purple,border:`0.5px solid ${C.purpleBorder}`,whiteSpace:"nowrap"}},"Quem é Giovanna")),
+    React.createElement("div",{style:{display:"grid",gridTemplateColumns:"44px 1fr",gap:12,padding:"14px 18px",alignItems:"flex-start",borderTop:`0.5px solid ${C.grayBorder}`}},
+      React.createElement("div",{style:{width:44,height:44,borderRadius:"50%",background:C.blueBg,border:`1.5px solid ${C.blueLight}`,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:600,fontSize:13,color:C.navyMid,flexShrink:0}},"GV"),
+      React.createElement("div",null,
+        React.createElement("div",{style:{fontSize:13,fontWeight:500,color:C.text,marginBottom:3}},"Giovanna Vizentin · ",React.createElement("span",{style:{fontWeight:400,color:C.textMuted}},"Gerente de Gerenciamento de Categoria · Kenvue Brasil")),
+        React.createElement("div",{style:{fontSize:11,color:C.textMuted,lineHeight:1.55,marginBottom:8}},"+10 anos em multinacional. Voltou recentemente do LATAM (3 anos) para foco 100% Brasil. Trabalha com RD, Panvel, São João, Nissei e Clamed. Cuida de Cuidados Infantis, Faciais, Solares, OTC e Íntimos. Lidera MSL, assortment, BI e projetos especiais."),
+        React.createElement("div",null,
+          ["Farma · Cliente Facing","Dados & BI","JBP · Selling Stories","Category Management","Execução no PDV"].map((t,i)=>{const colors=[{bg:C.blueBg,color:C.blueDark},{bg:C.greenBg,color:C.greenDark},{bg:C.orangeBg,color:C.orangeDark},{bg:C.purpleLight,color:C.purple},{bg:C.redBg,color:C.redDark}];return React.createElement("span",{key:i,style:{fontSize:10,padding:"2px 8px",borderRadius:20,fontWeight:500,display:"inline-block",margin:"2px 2px 2px 0",background:colors[i].bg,color:colors[i].color}},t)})
+        ))),
+    React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,padding:"0 18px 14px",borderTop:`0.5px solid ${C.grayBorder}`,paddingTop:12}},
+      React.createElement("div",{style:{fontSize:9,fontWeight:600,letterSpacing:".08em",textTransform:"uppercase",color:C.grayText,gridColumn:"1/-1",marginBottom:4,paddingTop:4}},"O que a move — leia antes de abrir a boca"),
+      [{accent:C.blue,title:"Crescer a pizza no PDV",body:"Ela mesma usa esse frame — ganha-ganha com o varejista. Você fala de crescimento de categoria, não de tirar espaço de concorrente."},{accent:"#3B6D11",title:"Dado que chega no campo",body:"Pós-Dunnhumby, ela é exigente com inteligência de dados. Já tem parceiro analítico — o ângulo é: o dado chega na mão do vendedor?"},{accent:C.purpleMid,title:"Visão de chão de loja",body:"Fez rotas recentemente. Aprecia quem tem contexto de execução real — não só painel. Mencione PDVs, não só dashboards."}].map((c,i)=>React.createElement("div",{key:i,style:{background:C.white,border:`0.5px solid ${C.grayBorder}`,borderRadius:8,padding:"10px 12px",borderLeft:`2px solid ${c.accent}`}},
+        React.createElement("div",{style:{fontSize:11,fontWeight:500,color:C.text,marginBottom:4}},c.title),
+        React.createElement("div",{style:{fontSize:11,color:C.textMuted,lineHeight:1.45}},c.body)))),
+    React.createElement("div",{style:{display:"flex",alignItems:"center",gap:10,padding:"9px 16px",background:C.orangeBg,borderTop:`2px solid #BA7517`}},
+      React.createElement("div",{style:{flex:1,height:.5,background:"#EF9F27"}}),
+      React.createElement("span",{style:{fontSize:10,padding:"2px 9px",borderRadius:20,fontWeight:500,background:C.orangeBg,color:C.orangeDark,border:"0.5px solid #EF9F27",whiteSpace:"nowrap"}},"Storytelling para hoje — 4 atos")),
+    [
+      {num:"1",label:"Abertura — espelhe o contexto dela",q:'"Giovanna, a categoria de cuidados pessoais está em um momento raro — crescendo 7% ao ano com uma lealdade de shopper que outras categorias não têm. Mas é exatamente nesse cenário que a execução faz a diferença entre capturar essa onda ou ver a concorrência capturar por você."',why:"Não começa falando da Cortex. Começa falando do mundo dela. Ela voltou do LATAM para Brasil — quer mostrar resultado rápido. Esse frame justifica urgência.",tags:[{label:"âncora de mercado",color:"blue"},{label:"urgência sem pressão",color:"orange"}]},
+      {num:"2",label:"Tensão — o paradoxo da Kenvue",q:'"Com 124 mil farmácias e 290 mil clínicas — um universo de quase 900 mil PDVs — a pergunta que eu quero entender com você é: a inteligência que vocês produzem chega com granularidade até o vendedor que está na frente desse PDV?"',why:"Não afirma o problema — pergunta. Ela confirma ou nega. Se confirmar a limitação, você tem a dor. Se negar, você pergunta como funciona na prática — e ouve.",tags:[{label:"expõe ponto cego",color:"red"},{label:"abre espaço pro dado",color:"green"}]},
+      {num:"3",label:"Conexão — fale a língua dela (pizza no PDV)",q:'"O Reach funciona exatamente como você descreveu — crescer a pizza, não brigar por fatia. A lógica é: dado de potencial por PDV, perfil de shopper e mix recomendado chegam diretamente no vendedor — no WhatsApp, se for o canal dele. Ele vai ao PDV sabendo o que oferecer e para quem. A Kenvue deixa de ter uma estratégia de categoria e passa a ter uma execução de categoria."',why:"Use as palavras dela. \"Crescer a pizza no PDV\" é o frame que ela usa — devolva exatamente isso. A Dunnhumby resolve análise; o Reach resolve a última milha.",tags:[{label:"linguagem dela",color:"orange"},{label:"posicionamento vs Dunnhumby",color:"purple"}]},
+      {num:"4",label:"Âncora — McKinsey fecha o argumento",q:'"O McKinsey identificou que o shopper de beleza e cuidados pessoais não troca de marca — mas compra menos. Isso significa que a batalha não é de preço, é de presença no PDV certo com o produto certo. É exatamente isso que a inteligência de execução resolve."',why:"McKinsey empresta credibilidade ao diagnóstico e valida que o investimento em execução é estratégico, não operacional. Ela não precisa convencer a diretoria de que \"é importante\" — tem evidência de mercado.",tags:[{label:"âncora externa",color:"blue"},{label:"justifica budget",color:"red"}]}
+    ].map((s,i)=>React.createElement("div",{key:i,style:{display:"grid",gridTemplateColumns:"28px 1fr",borderTop:`0.5px solid ${C.grayBorder}`}},
+      React.createElement("div",{style:{background:C.purpleLight,display:"flex",alignItems:"flex-start",justifyContent:"center",padding:"13px 0",fontSize:11,fontWeight:500,color:C.purpleMid,borderRight:`0.5px solid ${C.purpleBorder}`}},s.num),
+      React.createElement("div",{style:{padding:"11px 14px"}},
+        React.createElement("div",{style:{fontSize:9,fontWeight:600,letterSpacing:".08em",textTransform:"uppercase",color:C.grayText,marginBottom:4}},s.label),
+        React.createElement("div",{style:{fontSize:12,color:C.text,lineHeight:1.55,fontStyle:"italic",marginBottom:6}},s.q),
+        React.createElement("div",{style:{fontSize:11,color:C.textMuted,lineHeight:1.5,padding:"5px 9px",borderLeft:`2px solid ${C.purpleBorder}`,marginBottom:5}},s.why),
+        React.createElement("div",{style:{display:"flex",gap:5,flexWrap:"wrap"}},s.tags.map((t,j)=>React.createElement(Tag,{key:j,color:t.color},t.label)))))),
+    React.createElement("div",{style:{display:"flex",alignItems:"center",gap:10,padding:"9px 16px",background:C.redBg,borderTop:`2px solid #A32D2D`}},
+      React.createElement("div",{style:{flex:1,height:.5,background:"#F09595"}}),
+      React.createElement("span",{style:{fontSize:10,padding:"2px 9px",borderRadius:20,fontWeight:500,background:C.redBg,color:C.redDark,border:"0.5px solid #F09595",whiteSpace:"nowrap"}},"Como posicionar vs Dunnhumby")),
+    React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",borderTop:`0.5px solid ${C.grayBorder}`}},
+      React.createElement("div",{style:{padding:"12px 14px",borderRight:`0.5px solid ${C.grayBorder}`,borderLeft:"2px solid #97C459"}},
+        React.createElement("div",{style:{fontSize:9,fontWeight:600,letterSpacing:".08em",textTransform:"uppercase",color:"#3B6D11",marginBottom:4}},"Dunnhumby — o que já existe"),
+        React.createElement("div",{style:{fontSize:13,fontWeight:500,color:C.text,marginBottom:5,lineHeight:1.45}},"Análise estratégica de categoria"),
+        React.createElement("div",{style:{fontSize:11,color:C.textMuted,lineHeight:1.55}},"Consultoria de dados que apoia decisões estratégicas. Ela fez questão de destacar isso no LinkedIn — é um parceiro valioso pra ela. Não concorra, integre.")),
+      React.createElement("div",{style:{padding:"12px 14px",borderLeft:`2px solid ${C.blue}`}},
+        React.createElement("div",{style:{fontSize:9,fontWeight:600,letterSpacing:".08em",textTransform:"uppercase",color:C.grayText,marginBottom:4}},"Cortex Reach — o que falta"),
+        React.createElement("div",{style:{fontSize:13,fontWeight:500,color:C.text,marginBottom:5,lineHeight:1.45}},"Execução na ponta — a última milha"),
+        React.createElement("div",{style:{fontSize:11,color:C.textMuted,lineHeight:1.55}},"A estratégia está ótima. Mas o dado chega no vendedor antes de ele entrar no PDV? O Reach é o que transforma o que a Dunnhumby descobre em ação no campo."))),
+    React.createElement("div",{style:{background:C.navy,padding:"14px 18px",borderTop:`2px solid ${C.blue}`}},
+      React.createElement("div",{style:{fontSize:9,fontWeight:500,letterSpacing:".1em",textTransform:"uppercase",color:C.blueLight,marginBottom:6}},"Frase de transição para o pitch"),
+      React.createElement("div",{style:{fontSize:12,color:"#D6E4F0",lineHeight:1.65}},'"Giovanna, o que você descreveu — crescer a pizza, execução estratégica por shopper, dado chegando no campo — é exatamente o gap que o Cortex Reach fecha. Posso te mostrar como funciona na prática para o farma?"')),
+    React.createElement("div",{style:{display:"flex",alignItems:"center",gap:10,padding:"9px 16px",background:C.purpleLight,borderTop:`2px solid ${C.purple}`}},
+      React.createElement("div",{style:{flex:1,height:.5,background:C.purpleBorder}}),
+      React.createElement("span",{style:{fontSize:10,padding:"2px 9px",borderRadius:20,fontWeight:500,background:C.purpleLight,color:C.purple,border:`0.5px solid ${C.purpleBorder}`,whiteSpace:"nowrap"}},"Próximos passos sugeridos")),
+    React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,padding:"14px 16px",background:C.gray,borderTop:`0.5px solid ${C.grayBorder}`}},
+      [{title:"Se ela confirmar a dor",body:"Pergunte quem mais precisaria estar envolvido — times de trade, dados, comercial. Monte a lista de convidados para uma sessão de mapeamento."},{title:"Se ela mencionar a Dunnhumby",body:"Valide o parceiro, não concorra. Posicione o Reach como camada de execução — o que a Dunnhumby descobre, o Reach transforma em ação no PDV."},{title:"Saída mínima da call",body:"Scoping form: quantos PDVs, quais canais, quais SKUs ativos. Tamanho do universo é o que dimensiona a proposta."}].map((c,i)=>React.createElement("div",{key:i,style:{background:C.white,border:`0.5px solid ${C.grayBorder}`,borderRadius:8,padding:"10px 12px"}},
+        React.createElement("div",{style:{fontSize:11,fontWeight:500,color:C.text,marginBottom:4}},c.title),
+        React.createElement("div",{style:{fontSize:11,color:C.textMuted,lineHeight:1.45}},c.body)))),
+    React.createElement("div",{style:{background:C.purpleDark,padding:"11px 16px",borderTop:`0.5px solid rgba(255,255,255,.08)`}},
+      React.createElement("div",{style:{fontSize:12,color:"#EEEDFE",lineHeight:1.6,fontStyle:"italic"}},'"Giovanna, ',React.createElement("strong",{style:{color:"#fff",fontStyle:"normal"}},"execução de categoria no PDV granular"),' — esse é o problema que eu vim resolver com você hoje. Faz sentido pra você?"'))
+  )
+}
+
+const PAGES=[
+  {section:"Discovery",items:[{id:"discovery",label:"Playbook de discovery",dot:"#378ADD",badge:"ativo"}]},
+  {section:"Kenvue",items:[{id:"briefing",label:"Briefing — Giovanna",dot:"#534AB7",badge:"hoje"}]}
+];
+
+function App(){
+  const[pg,setPg]=useState("discovery");
+  const lbl=PAGES.flatMap(s=>s.items).find(i=>i.id===pg)?.label||"";
+  const sub=pg==="briefing"?"Kenvue · Gerente de Categorias Farma":"Cortex Reach · Sistema de vendas";
+  const render=()=>{
+    if(pg==="discovery")return React.createElement(PageDiscovery,null);
+    if(pg==="briefing")return React.createElement(PageBriefing,null);
+  };
+  return React.createElement("div",{style:{display:"flex",minHeight:"100vh",fontFamily:"-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"}},
+    React.createElement("div",{style:{width:205,flexShrink:0,background:C.navyDark,display:"flex",flexDirection:"column",position:"sticky",top:0,height:"100vh",overflowY:"auto"}},
+      React.createElement("div",{style:{padding:"16px 14px 12px",borderBottom:"0.5px solid rgba(255,255,255,.1)"}},
+        React.createElement("div",{style:{fontSize:9,letterSpacing:".1em",textTransform:"uppercase",color:C.blueLight,marginBottom:2}},"Cortex Intelligence"),
+        React.createElement("div",{style:{fontSize:14,fontWeight:600,color:C.white}},"Reach — Sistema")),
+      PAGES.map(s=>React.createElement("div",{key:s.section},
+        React.createElement("div",{style:{padding:"14px 14px 4px",fontSize:9,fontWeight:600,letterSpacing:".1em",textTransform:"uppercase",color:"rgba(255,255,255,.3)"}},s.section),
+        s.items.map(item=>React.createElement("button",{key:item.id,onClick:()=>setPg(item.id),style:{display:"flex",alignItems:"center",gap:8,padding:"8px 12px",fontSize:12,color:pg===item.id?C.white:"rgba(255,255,255,.55)",cursor:"pointer",borderRadius:6,margin:"1px 6px",background:pg===item.id?"rgba(55,138,221,.2)":"transparent",border:"none",width:"calc(100% - 12px)",textAlign:"left"}},
+          React.createElement("div",{style:{width:6,height:6,borderRadius:"50%",background:item.dot,flexShrink:0}}),
+          React.createElement("span",{style:{flex:1}},item.label),
+          item.badge&&React.createElement("span",{style:{fontSize:9,background:pg===item.id?"rgba(55,138,221,.3)":"rgba(255,255,255,.1)",color:C.blueLight,padding:"1px 6px",borderRadius:20}},item.badge))))),
+      React.createElement("div",{style:{marginTop:"auto",padding:"12px 14px",borderTop:"0.5px solid rgba(255,255,255,.08)",fontSize:10,color:"rgba(255,255,255,.25)",lineHeight:1.5}},"v0.2 — pré-sistema",React.createElement("br",null),"Lucas · Cortex Reach")),
+    React.createElement("div",{style:{flex:1,display:"flex",flexDirection:"column",background:"#f0f2f5"}},
+      React.createElement("div",{style:{background:C.white,borderBottom:`0.5px solid ${C.grayBorder}`,padding:"11px 24px",display:"flex",alignItems:"center",position:"sticky",top:0,zIndex:50}},
+        React.createElement("div",null,
+          React.createElement("div",{style:{fontSize:13,fontWeight:600,color:C.text}},lbl),
+          React.createElement("div",{style:{fontSize:10,color:C.grayText,marginTop:1}},sub))),
+      React.createElement("div",{style:{padding:"20px",flex:1}},render())))
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
+</script>
+</body>
+</html>
